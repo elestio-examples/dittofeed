@@ -25,4 +25,5 @@ You can open pgAdmin web UI here:
 # IMPORTANT
 
 Before you deploy your application, make sure you have a Segment.io AND a SendGrid account.
-If not, you'll cannot send your emails.
+
+If not, you won't be able to send emails and collect events
