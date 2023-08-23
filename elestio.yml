@@ -19,7 +19,7 @@ ports:
     isAuth: false
   - protocol: "HTTPS"
     targetProtocol: "HTTP"
-    listeningPort: "8443"
+    listeningPort: "7443"
     targetPort: "8160"
     targetIP: "172.17.0.1"
     public: true
@@ -79,7 +79,7 @@ lifeCycleConfig:
   postRestoreCommand: "./scripts/postRestore.sh"
   postDeployCommand: "./scripts/postDeploy.sh"
 webUI:
-  - url: "https://[CI_CD_DOMAIN]:8443"
+  - url: "https://[CI_CD_DOMAIN]:7443"
     label: "PgAdmin"
     login: "[ADMIN_EMAIL]"
     password: "[ADMIN_PASSWORD]"

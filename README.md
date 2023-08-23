@@ -15,3 +15,14 @@ You can open Dittofeed UI here:
     URL: https://[CI_CD_DOMAIN]
     email: [ADMIN_EMAIL]
     password: [ADMIN_PASSWORD]
+
+You can open pgAdmin web UI here:
+
+    URL: https://[CI_CD_DOMAIN]:7443
+    email: [ADMIN_EMAIL]
+    password: [ADMIN_PASSWORD]
+
+# IMPORTANT
+
+Before you deploy your application, make sure you have a Segment.io AND a SendGrid account.
+If not, you'll cannot send your emails.
