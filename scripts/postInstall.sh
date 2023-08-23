@@ -5,3 +5,4 @@ set -o allexport; source .env; set +o allexport;
 echo "Waiting for software to be ready ..."
 sleep 30s;
 
+docker-compose exec -T api bash -c "node ./packages/api/dist/scripts/bootstrap.js"

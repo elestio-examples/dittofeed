@@ -6,7 +6,9 @@ ports:
     targetIP: "172.17.0.1"
     public: true
     path: "/"
-    isAuth: false
+    isAuth: true
+    login: "root"
+    password: "random_password"
   - protocol: "HTTPS"
     targetProtocol: "HTTP"
     listeningPort: "8443"
@@ -15,7 +17,25 @@ ports:
     public: true
     path: "/"
     isAuth: false
+  - protocol: "HTTPS"
+    targetProtocol: "HTTP"
+    listeningPort: "8443"
+    targetPort: "8160"
+    targetIP: "172.17.0.1"
+    public: true
+    path: "/"
+    isAuth: false
+  - protocol: "TCP"
+    targetProtocol: "TCP"
+    listeningPort: "25432"
+    targetIP: "172.17.0.1"
+    targetPort: "2632"
+    public: true
 environments:
+  - key: "ADMIN_EMAIL"
+    value: "[EMAIL]"
+  - key: "ADMIN_PASSWORD"
+    value: "random_password"
   - key: "DATABASE_USER"
     value: "postgres"
   - key: "DATABASE_PASSWORD"
@@ -38,6 +58,8 @@ environments:
     value: "1.18.5"
   - key: "POSTGRES_VERSION"
     value: "15"
+  - key: "DASHBOARD_API_BASE"
+    value: "https://[CI_CD_DOMAIN]:8443"
 
 config:
   runTime: "dockerCompose"
@@ -57,7 +79,7 @@ lifeCycleConfig:
   postRestoreCommand: "./scripts/postRestore.sh"
   postDeployCommand: "./scripts/postDeploy.sh"
 webUI:
-  - url: "https://[CI_CD_DOMAIN]"
-    label: "Dittofeed Admin"
+  - url: "https://[CI_CD_DOMAIN]:8443"
+    label: "PgAdmin"
     login: "[ADMIN_EMAIL]"
     password: "[ADMIN_PASSWORD]"
