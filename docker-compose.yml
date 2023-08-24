@@ -15,7 +15,7 @@ x-backend-app-env: &backend-app-env
   DASHBOARD_API_BASE: ${DASHBOARD_API_BASE}
 services:
   dashboard:
-    image: dittofeed/dittofeed-dashboard:${IMAGE_TAG}
+    image: dittofeed/dittofeed-dashboard:${SOFTWARE_VERSION_TAG}
     ports:
       - "172.17.0.1:6943:3000"
     depends_on:
@@ -25,7 +25,7 @@ services:
     environment:
       <<: *backend-app-env
   api:
-    image: dittofeed/dittofeed-api:${IMAGE_TAG}
+    image: dittofeed/dittofeed-api:${SOFTWARE_VERSION_TAG}
     ports:
       - "172.17.0.1:6944:3001"
     depends_on:
@@ -35,14 +35,14 @@ services:
     environment:
       <<: *backend-app-env
   worker:
-    image: dittofeed/dittofeed-worker:${IMAGE_TAG}
+    image: dittofeed/dittofeed-worker:${SOFTWARE_VERSION_TAG}
     depends_on:
       - postgres
       - temporal
     environment:
       <<: *backend-app-env
   admin-cli:
-    image: dittofeed/dittofeed-admin-cli:${IMAGE_TAG}
+    image: dittofeed/dittofeed-admin-cli:${SOFTWARE_VERSION_TAG}
     entrypoint: []
     command: tail -f /dev/null
     tty: true
