@@ -52,7 +52,7 @@ environments:
     value: "http://clickhouse-server:8123"
   - key: "TEMPORAL_ADDRESS"
     value: "temporal:7233"
-  - key: "IMAGE_TAG"
+  - key: "SOFTWARE_VERSION_TAG"
     value: "latest"
   - key: "TEMPORAL_VERSION"
     value: "1.18.5"
