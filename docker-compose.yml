@@ -1,4 +1,5 @@
-version: "3.3"
+
+version: "3.9"
 x-database-credentials: &database-credentials
   DATABASE_USER: ${DATABASE_USER}
   DATABASE_PASSWORD: ${DATABASE_PASSWORD}
@@ -13,40 +14,28 @@ x-backend-app-env: &backend-app-env
   CLICKHOUSE_HOST: ${CLICKHOUSE_HOST}
   TEMPORAL_ADDRESS: ${TEMPORAL_ADDRESS}
   WORKSPACE_NAME: ${WORKSPACE_NAME:-Default}
-  DASHBOARD_API_BASE: ${DASHBOARD_API_BASE}
+  AUTH_MODE: ${AUTH_MODE}
+  SECRET_KEY: ${SECRET_KEY}
+  PASSWORD: ${ADMIN_PASSWORD}
 services:
   dashboard:
-    image: dittofeed/dittofeed-dashboard:${SOFTWARE_VERSION_TAG}
+    image: dittofeed/dittofeed-lite:${SOFTWARE_VERSION_TAG}
     restart: always
     ports:
       - "172.17.0.1:6943:3000"
     depends_on:
       - postgres
       - temporal
-      - api
+      - clickhouse-server
     environment:
       <<: *backend-app-env
-  api:
-    image: dittofeed/dittofeed-api:${SOFTWARE_VERSION_TAG}
-    restart: always
-    ports:
-      - "172.17.0.1:6944:3001"
-    depends_on:
-      - postgres
-      - temporal
-      - worker
-    environment:
-      <<: *backend-app-env
-  worker:
-    image: dittofeed/dittofeed-worker:${SOFTWARE_VERSION_TAG}
-    restart: always
-    depends_on:
-      - postgres
-      - temporal
-    environment:
-      <<: *backend-app-env
+      # uncomment while upgrading dittofeed
+      # BOOTSTRAP: "false"
+    env_file:
+      - .env
+  # useful for upgrading dittofeed
   admin-cli:
-    image: dittofeed/dittofeed-admin-cli:${SOFTWARE_VERSION_TAG}
+    image: dittofeed/dittofeed-lite:${SOFTWARE_VERSION_TAG}
     entrypoint: []
     command: tail -f /dev/null
     tty: true
@@ -56,6 +45,8 @@ services:
       - clickhouse-server
     environment:
       <<: *backend-app-env
+    env_file:
+      - .env
   temporal:
     depends_on:
       - postgres
@@ -74,8 +65,17 @@ services:
       - 172.17.0.1:7233:7233
     volumes:
       - ./packages/backend-lib/temporal-dynamicconfig:/etc/temporal/config/dynamicconfig
+  temporal-ui:
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=${TEMPORAL_ADDRESS}
+      - TEMPORAL_CORS_ORIGINS=${DOMAIN}
+    image: temporalio/ui:${TEMPORAL_VERSION}
+    ports:
+     - 172.17.0.1:8080:8080
   postgres:
-    image: elestio/postgres:15
+    image: elestio/postgres:${POSTGRES_VERSION}
     restart: always
     environment:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
@@ -86,8 +86,7 @@ services:
     volumes:
       - ./postgres:/var/lib/postgresql/data
   clickhouse-server:
-    image: clickhouse/clickhouse-server:22.9.5.25-alpine
-    restart: always
+    image: clickhouse/clickhouse-server:23.8.8.20-alpine
     environment:
       <<: *clickhouse-credentials
     ports:
@@ -97,7 +96,6 @@ services:
     volumes:
       - ./clickhouse_lib:/var/lib/clickhouse
       - ./clickhouse_log:/var/log/clickhouse-server
-
   pgadmin4:
     image: dpage/pgadmin4:latest
     restart: always
@@ -109,3 +107,7 @@ services:
       - "172.17.0.1:8160:8080"
     volumes:
       - ./servers.json:/pgadmin4/servers.json
+volumes:
+  postgres:
+  clickhouse_lib:
+  clickhouse_log:
