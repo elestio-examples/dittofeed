@@ -12,10 +12,15 @@ x-backend-app-env: &backend-app-env
   DATABASE_PORT: ${DATABASE_PORT}
   CLICKHOUSE_HOST: ${CLICKHOUSE_HOST}
   TEMPORAL_ADDRESS: ${TEMPORAL_ADDRESS}
+  WORKSPACE_NAME: ${WORKSPACE_NAME:-Default}
+  AUTH_MODE: ${AUTH_MODE:-single-tenant}
+  SECRET_KEY: ${SECRET_KEY:-GEGL1RHjFVOxIO80Dp8+ODlZPOjm2IDBJB/UunHlf3c=}
+  PASSWORD: ${DATABASE_PASSWORD}
   DASHBOARD_API_BASE: ${DASHBOARD_API_BASE}
 services:
   dashboard:
     image: dittofeed/dittofeed-dashboard:${SOFTWARE_VERSION_TAG}
+    restart: always
     ports:
       - "172.17.0.1:6943:3000"
     depends_on:
@@ -26,6 +31,7 @@ services:
       <<: *backend-app-env
   api:
     image: dittofeed/dittofeed-api:${SOFTWARE_VERSION_TAG}
+    restart: always
     ports:
       - "172.17.0.1:6944:3001"
     depends_on:
@@ -36,6 +42,7 @@ services:
       <<: *backend-app-env
   worker:
     image: dittofeed/dittofeed-worker:${SOFTWARE_VERSION_TAG}
+    restart: always
     depends_on:
       - postgres
       - temporal
@@ -63,6 +70,7 @@ services:
       - POSTGRES_SEEDS=${DATABASE_HOST}
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/prod.yaml
     image: temporalio/auto-setup:${TEMPORAL_VERSION}
+    restart: always
     labels:
       kompose.volume.type: configMap
     ports:
@@ -82,6 +90,7 @@ services:
       - ./postgres:/var/lib/postgresql/data
   clickhouse-server:
     image: clickhouse/clickhouse-server:22.9.5.25-alpine
+    restart: always
     environment:
       <<: *clickhouse-credentials
     ports:
