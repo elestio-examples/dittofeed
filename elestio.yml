@@ -55,12 +55,15 @@ environments:
   - key: "SOFTWARE_VERSION_TAG"
     value: "latest"
   - key: "TEMPORAL_VERSION"
-    value: "1.18.5"
+    value: "1.22.4"
   - key: "POSTGRES_VERSION"
     value: "15"
   - key: "DASHBOARD_API_BASE"
     value: "https://[CI_CD_DOMAIN]:8443"
-
+  - key: "AUTH_MODE"
+    value: "single-tenant"
+  - key: "DOMAIN"
+    value: "[CI_CD_DOMAIN]"   
 config:
   runTime: "dockerCompose"
   version: ""
