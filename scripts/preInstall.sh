@@ -23,6 +23,6 @@ EOT
 random_string=$(head -c 32 /dev/urandom | base64)
 
 # Write the random string to the ./.env file
-echo "SECRET_KEY=$random_string" > ./.env
+echo "SECRET_KEY=$random_string" >> ./.env
 
 echo "Random string generated and saved to .env file."
