@@ -71,7 +71,7 @@ services:
     environment:
       - TEMPORAL_ADDRESS=${TEMPORAL_ADDRESS}
       - TEMPORAL_CORS_ORIGINS=${DOMAIN}
-    image: temporalio/ui:${TEMPORAL_VERSION}
+    image: temporalio/ui:${TEMPORAL_UI_VERSION:-2.22.1}
     ports:
      - 172.17.0.1:8080:8080
   postgres:
