@@ -62,6 +62,8 @@ environments:
     value: "https://[CI_CD_DOMAIN]"
   - key: "AUTH_MODE"
     value: "single-tenant"
+  - key: "DOMAIN"
+    value: "[CI_CD_DOMAIN]"
 
 config:
   runTime: "dockerCompose"
