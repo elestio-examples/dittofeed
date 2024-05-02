@@ -14,39 +14,26 @@ x-backend-app-env: &backend-app-env
   TEMPORAL_ADDRESS: ${TEMPORAL_ADDRESS}
   WORKSPACE_NAME: ${WORKSPACE_NAME:-Default}
   DASHBOARD_API_BASE: ${DASHBOARD_API_BASE}
+  AUTH_MODE: ${AUTH_MODE}
+  SECRET_KEY: ${SECRET_KEY}
+  PASSWORD: ${ADMIN_PASSWORD}
+  SINGLE_TENANT_COOKIE_SECURE: "true"
 services:
   dashboard:
-    image: dittofeed/dittofeed-dashboard:${SOFTWARE_VERSION_TAG}
+    image: dittofeed/dittofeed-lite:${SOFTWARE_VERSION_TAG}
     restart: always
     ports:
       - "172.17.0.1:6943:3000"
     depends_on:
       - postgres
       - temporal
-      - api
+      - clickhouse-server
     environment:
       <<: *backend-app-env
-  api:
-    image: dittofeed/dittofeed-api:${SOFTWARE_VERSION_TAG}
-    restart: always
-    ports:
-      - "172.17.0.1:6944:3001"
-    depends_on:
-      - postgres
-      - temporal
-      - worker
-    environment:
-      <<: *backend-app-env
-  worker:
-    image: dittofeed/dittofeed-worker:${SOFTWARE_VERSION_TAG}
-    restart: always
-    depends_on:
-      - postgres
-      - temporal
-    environment:
-      <<: *backend-app-env
+    env_file:
+      - ./.env
   admin-cli:
-    image: dittofeed/dittofeed-admin-cli:${SOFTWARE_VERSION_TAG}
+    image: dittofeed/dittofeed-lite:v0.12.0
     entrypoint: []
     command: tail -f /dev/null
     tty: true
@@ -56,6 +43,8 @@ services:
       - clickhouse-server
     environment:
       <<: *backend-app-env
+    env_file:
+      - ./.env
   temporal:
     depends_on:
       - postgres
@@ -99,7 +88,7 @@ services:
       - ./clickhouse_log:/var/log/clickhouse-server
 
   pgadmin4:
-    image: dpage/pgadmin4:latest
+    image: elestio/pgadmin:latest
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: ${ADMIN_EMAIL}

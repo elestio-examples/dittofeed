@@ -6,9 +6,7 @@ ports:
     targetIP: "172.17.0.1"
     public: true
     path: "/"
-    isAuth: true
-    login: "root"
-    password: "random_password"
+    isAuth: false
   - protocol: "HTTPS"
     targetProtocol: "HTTP"
     listeningPort: "8443"
@@ -53,13 +51,17 @@ environments:
   - key: "TEMPORAL_ADDRESS"
     value: "temporal:7233"
   - key: "SOFTWARE_VERSION_TAG"
-    value: "latest"
+    value: "v0.13.10"
   - key: "TEMPORAL_VERSION"
     value: "1.18.5"
   - key: "POSTGRES_VERSION"
     value: "15"
+  - key: "DASHBOARD_URL"
+    value: "https://[CI_CD_DOMAIN]"
   - key: "DASHBOARD_API_BASE"
-    value: "https://[CI_CD_DOMAIN]:8443"
+    value: "https://[CI_CD_DOMAIN]"
+  - key: "AUTH_MODE"
+    value: "single-tenant"
 
 config:
   runTime: "dockerCompose"
@@ -79,6 +81,9 @@ lifeCycleConfig:
   postRestoreCommand: "./scripts/postRestore.sh"
   postDeployCommand: "./scripts/postDeploy.sh"
 webUI:
+  - url: "https://[CI_CD_DOMAIN]"
+    label: "Dittofeed"
+    password: "[ADMIN_PASSWORD]"
   - url: "https://[CI_CD_DOMAIN]:7443"
     label: "PgAdmin"
     login: "[ADMIN_EMAIL]"

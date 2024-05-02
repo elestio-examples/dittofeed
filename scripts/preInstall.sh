@@ -17,3 +17,10 @@ cat <<EOT > ./servers.json
     }
 }
 EOT
+
+SECRET_KEY=$(openssl rand -base64 32 | head -c 44)
+
+cat << EOT >> ./.env
+
+SECRET_KEY=${SECRET_KEY}
+EOT
